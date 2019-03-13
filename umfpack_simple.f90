@@ -55,8 +55,10 @@ use mUMFPACK
   integer ( kind = 4 ) status
   integer ( kind = 8 ) symbolic
   integer ( kind = 4 ) sys
+  character(len=100)  OutputDir
   real ( kind = 8 ) x(n)
-
+  OutputDir =	"FortranOutputDir/"
+  CALL system ("mkdir -p " // trim(OutputDir))
   call timestamp ( );
   write ( *, '(a)' ) ''
   write ( *, '(a)' ) 'UMFPACK_SIMPLE:'
@@ -117,6 +119,15 @@ use mUMFPACK
   do i = 1, n
     write ( *, '(2x,g14.6)' ) x(i)
   end do
+
+  OPEN(unit=3, FILE = trim(OutputDir) // 'result.txt', ACTION='write', STATUS = 'replace')
+  write ( 3, '(a)' ) ''
+  write ( 3, '(a)' ) '  Computed solution:'
+  write ( 3, '(a)' ) ''
+  do i = 1, n
+    write ( 3, '(2x,g14.6)' ) x(i)
+  end do
+  CLOSE(3)
 !
 !  Terminate.
 !
@@ -200,6 +211,5 @@ subroutine timestamp ( )
 
   write ( *, '(i2,1x,a,1x,i4,2x,i2,a1,i2.2,a1,i2.2,a1,i3.3,1x,a)' ) &
     d, trim ( month(m) ), y, h, ':', n, ':', s, '.', mm, trim ( ampm )
-
   return
 end
